@@ -1,0 +1,24 @@
+{
+  "name": "email-cleanup",
+  "version": "1.0.0",
+  "description": "Cleanup a configured set of emails",
+  "main": "index.js",
+  "scripts": {
+    "test": "sh scripts/tesh.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nigelsdtech/email-cleanup.git"
+  },
+  "keywords": [
+    "Email",
+    "gmail",
+    "cleanup"
+  ],
+  "author": "Nigel Stephen D'Souza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nigelsdtech/email-cleanup/issues"
+  },
+  "homepage": "https://github.com/nigelsdtech/email-cleanup#readme"
+}
