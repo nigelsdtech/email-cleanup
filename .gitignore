@@ -38,3 +38,6 @@ jspm_packages
 
 # Rogue swps
 .*.swp
+
+# Private config files
+config/local*.js*

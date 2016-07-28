@@ -4,5 +4,6 @@
 
 appname=${PWD##*/}
 export NODE_APP_INSTANCE="${appname}"
+export NODE_ENV="prod"
 
 node index.js

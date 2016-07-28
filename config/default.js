@@ -38,8 +38,8 @@ module.exports = {
     clientSecretFile    : defer( function (cfg) { return cfg.auth.clientSecretFile } ),
     emailsFrom          : "Nigel's Raspberry Pi <"+process.env.PERSONAL_EMAIL+">",
     googleScopes        : ["https://www.googleapis.com/auth/gmail.send"]
-    name                : process.env.PERSONAL_EMAIL,
-    notificationTo      : "Reporter (Personal)",
+    name                : "Reporter (Personal)",
+    notificationTo      : process.env.PERSONAL_EMAIL,
     tokenDir            : defer( function (cfg) { return cfg.auth.tokenFileDir } ),
     tokenFile           : "access_token_reporter.json",
     user                : process.env.PERSONAL_GMAIL_USERNAME

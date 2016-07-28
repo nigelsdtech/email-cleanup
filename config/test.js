@@ -25,6 +25,7 @@ module.exports = {
     },
     timeout: {
       unit: (1000*2)
+      functional: (1000*10)
     }
   }
 
