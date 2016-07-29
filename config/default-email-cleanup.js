@@ -3,21 +3,21 @@ var defer = require('config/defer').deferConfig;
 
 module.exports = {
 
+  appName: "email-cleanup",
+
   auth: {
     scopes: ['https://mail.google.com']
   },
 
-  mailboxes: [
-    {
+  mailboxes: {
+    personal: {
       auth: { tokenFile: defer( function (cfg) { return "access_token_"+cfg.appName+"-personal.json" } ) },
-      name: 'personal',
-      searches: defer( function(cfg) { return cfg.searches['personal'] } )
+      emailAddress: process.env.PERSONAL_EMAIL_ADDRESS
     },
-    {
+    work: {
       auth: { tokenFile: defer( function (cfg) { return "access_token_"+cfg.appName+"-work.json" } ) },
-      name: 'workPrimary',
-      searches: defer( function(cfg) { return cfg.searches['workPrimary'] } )
+      emailAddress: process.env.OB_EMAIL_ADDRESS,
     }
-  ]
+  },
 
 }

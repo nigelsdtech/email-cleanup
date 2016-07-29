@@ -3,9 +3,7 @@
 var cfg          = require('config'),
     chai         = require('chai'),
     GmailModel   = require('gmail-model'),
-    rewire       = require('rewire'),
-    sinon        = require('sinon'),
-    EmailCleanup = rewire('../../lib/EmailCleanup.js');
+    EmailCleanup = require('../../lib/EmailCleanup.js');
 
 /*
  * Set up chai
@@ -15,52 +13,38 @@ chai.should();
 
 
 /*
- * Work mailbox
+ * Personal and Work mailboxes
  */
 
-var workGmail = new GmailModel({
-  clientSecretFile    : cfg.auth.clientSecretFile,
-  googleScopes        : cfg.auth.scopes.work,
-  name                : cfg.mailbox.work.name,
-  tokenDir            : cfg.auth.tokenFileDir,
-  tokenFile           : cfg.auth.tokenFile.work
-});
+var mailboxes = {}
 
-/*
- * Personal mailbox
- */
+for (var mb in cfg.mailboxes) {
 
-var personalGmail = new GmailModel({
-  clientSecretFile    : cfg.auth.clientSecretFile,
-  googleScopes        : cfg.auth.scopes.personal,
-  name                : cfg.mailbox.personal.name,
-  tokenDir            : cfg.auth.tokenFileDir,
-  tokenFile           : cfg.auth.tokenFile.personal
-});
+  mailboxes[mb] = new GmailModel({
+    clientSecretFile    : cfg.auth.clientSecretFile,
+    googleScopes        : cfg.auth.scopes,
+    name                : mb,
+    tokenDir            : cfg.auth.tokenFileDir,
+    tokenFile           : cfg.mailboxes[mb].auth.tokenFile
+  })
 
+}
 
-
-
-var timeout = cfg.test.functional
-
-
-/*
- * Some utility functions
- */
 
 /*
  * For sending out trigger emails
  */
 
-var triggerGmail = new GmailModel({
-  appSpecificPassword : cfg.mailbox.personal.password,
-  clientSecretFile    : cfg.auth.clientSecretFile,
-  emailsFrom          : cfg.mailbox.personal.emailsFrom,
-  googleScopes        : cfg.auth.scopes.personal,
-  tokenDir            : cfg.auth.tokenFileDir,
-  tokenFile           : cfg.auth.tokenFile.personal,
-  user                : cfg.mailbox.personal.user
-});
+var triggerGmail = new GmailModel(cfg.test.personalGmail);
+
+
+
+var timeout = cfg.test.timeout.functional
+
+
+/*
+ * Some utility functions
+ */
 
 /**
  * sendTriggerMessage
@@ -68,19 +52,56 @@ var triggerGmail = new GmailModel({
  * params.subject
  * params.to
  */
-function sendTriggerMessage (params,cb) {
+function sendTriggerMessage (params) {
 
-  personalGmail.sendMessage ({
+  triggerGmail.sendMessage ({
     body    : "This email to be cleaned up",
     subject : params.subject,
     to      : params.to
   }, function (err, message) {
-    if (err) { cb(err); return null; }
-    cb(message)
+    if (err) {
+      console.error('Failed to send trigger email: ' + err)
+      console.error(JSON.stringify(params))
+      throw new Error(err);
+    }
   })
 
 }
 
+/**
+ * deleteTriggerMessage
+ *
+ * params.subject
+ * params.to
+ */
+function deleteTriggerMessage (params) {
+
+  triggerGmail.listMessages ({
+    freetextSearch: "from:me subject:'" + params.subject + "'"
+  }, function (err, messages) {
+    if (err) {
+      console.error('Failed to list sent trigger email for deletion: ' + err)
+      console.error(JSON.stringify(params))
+      throw new Error(err);
+    }
+
+    var msgsToTrash = [];
+    messages.forEach( function (el) { msgsToTrash.push(el.id) })
+    
+    triggerGmail.trashMessages({
+      messageIds: msgsToTrash
+    }, function (err,resps) {
+      if (err) {
+        console.error('Failed to delete trigger email: ' + err)
+        console.error(JSON.stringify(params))
+        throw new Error(err);
+      }
+
+    });
+
+  })
+
+}
 
 
 /*
@@ -91,35 +112,24 @@ describe('Running the script when processing is required', function () {
 
   this.timeout(timeout);
 
-  var triggerEmailIdsPersonal = []
-  var triggerEmailIdsWork     = []
+  // Subject, to
+  var triggerEmails = [
+    {subject: 'Email cleanup test candidate 1',        to: cfg.mailboxes.personal.emailAddress},
+    {subject: 'Email cleanup test candidate 2',        to: cfg.mailboxes.personal.emailAddress},
+    {subject: 'Email cleanup test candidate 2 repeat', to: cfg.mailboxes.personal.emailAddress},
+    {subject: 'Email cleanup test no match',           to: cfg.mailboxes.personal.emailAddress},
+    {subject: 'Email cleanup test candidate 3',        to: cfg.mailboxes.work.emailAddress},
+    {subject: 'Email cleanup test candidate 4',        to: cfg.mailboxes.work.emailAddress},
+    {subject: 'Email cleanup test candidate 4 repeat', to: cfg.mailboxes.work.emailAddress}
+  ]
+
 
 
   before(function (done) {
 
-    // Subject, to
-    var toSend = [
-      {subject: 'Email cleanup test candidate 1',        to: personalEmail},
-      {subject: 'Email cleanup test candidate 2',        to: personalEmail},
-      {subject: 'Email cleanup test candidate 2 repeat', to: personalEmail},
-      {subject: 'Email cleanup test no match',           to: personalEmail},
-      {subject: 'Email cleanup test candidate 3',        to: workEmail},
-      {subject: 'Email cleanup test candidate 4',        to: workEmail},
-      {subject: 'Email cleanup test candidate 4 repeat', to: workEmail}
-    ]
+    triggerEmails.forEach( function (el) { sendTriggerMessage (el) });
 
-    toSend.foreach( function (el) {
-      sendTriggerMessage ( function (err, msg) {
-        if (err) {
-          console.error('Failed to send trigger email: ' + err)
-          console.error(JSON.stringify(el))
-          throw new Error(err);
-        }
-      });
-    });
-
-
-    setTimeout(EmailCleanup, 5000);
+    setTimeout(EmailCleanup, 10000);
 
   });
 
@@ -133,8 +143,8 @@ describe('Running the script when processing is required', function () {
   it('doesn\'t delete a message that doesn\'t match the criteria')
 
 
-  after(function (done) {
-
+  after(function () {
+    triggerEmails.forEach( function (el) { deleteTriggerMessage (el) });
   });
 
 });

@@ -1,0 +1,14 @@
+{
+  "searches": {
+    "personal": [
+      "newer_than 1d: subject:'Email cleanup test candidate 1'",
+      "newer_than 1d: subject:'Email cleanup test candidate 2'"
+    ],
+    "work": [
+      "newer_than 1d: subject:'Email cleanup test candidate 3'",
+      "newer_than 1d: subject:'Email cleanup test candidate 4'"
+    ]
+  }
+
+
+}

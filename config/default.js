@@ -37,7 +37,7 @@ module.exports = {
     appSpecificPassword : process.env.PERSONAL_APP_SPECIFIC_PASSWORD,
     clientSecretFile    : defer( function (cfg) { return cfg.auth.clientSecretFile } ),
     emailsFrom          : "Nigel's Raspberry Pi <"+process.env.PERSONAL_EMAIL+">",
-    googleScopes        : ["https://www.googleapis.com/auth/gmail.send"]
+    googleScopes        : ["https://www.googleapis.com/auth/gmail.send"],
     name                : "Reporter (Personal)",
     notificationTo      : process.env.PERSONAL_EMAIL,
     tokenDir            : defer( function (cfg) { return cfg.auth.tokenFileDir } ),
