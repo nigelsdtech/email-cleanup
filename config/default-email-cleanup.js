@@ -3,7 +3,7 @@ var defer = require('config/defer').deferConfig;
 
 module.exports = {
 
-  appName: "email-cleanup",
+  appNames: "email-cleanup",
 
   auth: {
     scopes: ['https://mail.google.com']

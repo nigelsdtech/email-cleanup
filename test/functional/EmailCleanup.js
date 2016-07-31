@@ -85,7 +85,19 @@ function deleteTriggerMessage (params) {
       throw new Error(err);
     }
 
-    var msgsToTrash = [];
+    var msgsToTrash = [messages[0]];
+
+    triggerGmail.trashMessages({
+      messageIds: msgsToTrash
+    }, function (err,resps) {
+      if (err) {
+        console.error('Failed to delete trigger email: ' + err)
+        console.error(JSON.stringify(params))
+        throw new Error(err);
+      }
+
+    });
+    /*
     messages.forEach( function (el) { msgsToTrash.push(el.id) })
     
     triggerGmail.trashMessages({
@@ -98,11 +110,15 @@ function deleteTriggerMessage (params) {
       }
 
     });
+    */
 
   })
 
 }
 
+function randomIntFromInterval(min,max) {
+  return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 /*
  * The actual tests
@@ -127,9 +143,11 @@ describe('Running the script when processing is required', function () {
 
   before(function (done) {
 
-    triggerEmails.forEach( function (el) { sendTriggerMessage (el) });
+    triggerEmails.forEach( function (el) { setTimeout( sendTriggerMessage(el), randomIntFromInterval(0,2000) ) });
 
-    setTimeout(EmailCleanup, 10000);
+    setTimeout(EmailCleanup, 5000);
+
+    setTimeout(done, 10000);
 
   });
 

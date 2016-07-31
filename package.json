@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/nigelsdtech/email-cleanup/issues"
   },
-  "homepage": "https://github.com/nigelsdtech/email-cleanup#readme"
+  "homepage": "https://github.com/nigelsdtech/email-cleanup#readme",
+  "config": {
+    "appName": "email-cleanup"
+  }
 }
