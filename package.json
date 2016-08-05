@@ -4,6 +4,7 @@
   "description": "Cleanup a configured set of emails",
   "main": "index.js",
   "scripts": {
+    "start": "sh scripts/start.sh",
     "test": "sh scripts/test.sh"
   },
   "repository": {
