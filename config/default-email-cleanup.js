@@ -14,7 +14,7 @@ module.exports = {
       appenders: [
         {
           type:       "file",
-          filename:   defer(function (cfg) { return cfg.log.logDir.concat("/" , cfg.appName , '-' , process.env.NODE_APP_INSTANCE , ".log" ) }),
+          filename:   defer(function (cfg) { return cfg.log.logDir.concat("/" , cfg.appName , '-' , process.env.NODE_ENV , ".log" ) }),
           category:   defer(function (cfg) { return cfg.appName }),
           reloadSecs: 180,
           maxLogSize: 512000
