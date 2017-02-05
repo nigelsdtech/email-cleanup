@@ -24,5 +24,8 @@
   "homepage": "https://github.com/nigelsdtech/email-cleanup#readme",
   "config": {
     "appName": "email-cleanup"
+  },
+  "dependencies": {
+    "batchflow": "0.4.0"
   }
 }
