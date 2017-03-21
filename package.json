@@ -26,6 +26,7 @@
     "appName": "email-cleanup"
   },
   "dependencies": {
-    "batchflow": "0.4.0"
+    "batchflow": "0.4.0",
+    "email-notification": "git://github.com/nigelsdtech/email-notification.git#4a6d207a5f523daba312a3d427ae06c98fbff853"
   }
 }

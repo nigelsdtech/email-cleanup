@@ -2,15 +2,14 @@ var cfg   = require('config');
 var defer = require('config/defer').deferConfig;
 
 module.exports = {
-  appName: process.env.npm_package_config_appName,
-  appInstance: defer(function (cfg) { return cfg.appName.concat((process.env.NODE_ENV)?'-'+process.env.NODE_ENV:'') }),
+  appName: "email-notification",
+  appInstance: process.env.NODE_APP_INSTANCE,
 
   auth: {
     credentialsDir:   process.env.HOME+"/.credentials",
     clientSecretFile: defer( function (cfg) { return cfg.auth.credentialsDir+"/client_secret.json" } ),
     tokenFileDir:     defer( function (cfg) { return cfg.auth.credentialsDir } ),
-    tokenFile:        defer( function (cfg) { return "access_token_"+cfg.appName+".json" } ),
-    scopes:           (process.env.npm_package_config_googleAuthScopes)? process.env.npm_package_config_googleAuthScopes.split(",") : null
+    scopes:           ['https://mail.google.com']
   },
 
   log: {
@@ -34,8 +33,10 @@ module.exports = {
     logDir: "./logs"
   },
 
+  processedLabelName: defer( function (cfg) { return cfg.appName + "-" + cfg.appInstance + "-processed" } ),
+
   reporter: {
-    appName             : defer( function (cfg) { return cfg.appInstance } ),
+    appName             : defer( function (cfg) { return cfg.appName + "-" + cfg.appInstance } ),
     appSpecificPassword : process.env.PERSONAL_APP_SPECIFIC_PASSWORD,
     clientSecretFile    : defer( function (cfg) { return cfg.auth.clientSecretFile } ),
     emailsFrom          : "Nigel's Raspberry Pi <"+process.env.PERSONAL_EMAIL+">",
