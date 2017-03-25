@@ -2,14 +2,15 @@ var cfg   = require('config');
 var defer = require('config/defer').deferConfig;
 
 module.exports = {
-  appName: "email-notification",
+  appName: "email-cleanup",
   appInstance: process.env.NODE_APP_INSTANCE,
 
   auth: {
     credentialsDir:   process.env.HOME+"/.credentials",
     clientSecretFile: defer( function (cfg) { return cfg.auth.credentialsDir+"/client_secret.json" } ),
-    tokenFileDir:     defer( function (cfg) { return cfg.auth.credentialsDir } ),
-    scopes:           ['https://mail.google.com']
+    tokenDir:         defer( function (cfg) { return cfg.auth.credentialsDir } ),
+    tokenFile:        defer( function (cfg) { return "access_token_"+cfg.appName+"-"+"%s"+".json" } ),
+    googleScopes:     ['https://mail.google.com']
   },
 
   log: {
