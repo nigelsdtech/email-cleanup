@@ -16,9 +16,6 @@ while getopts i: FLAG; do
 	esac
 done
 
-
-
-#appname=${PWD##*/}
 export NODE_APP_INSTANCE
 
 node index.js

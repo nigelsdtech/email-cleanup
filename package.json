@@ -22,13 +22,9 @@
     "url": "https://github.com/nigelsdtech/email-cleanup/issues"
   },
   "homepage": "https://github.com/nigelsdtech/email-cleanup#readme",
-  "config": {
-    "appName": "email-cleanup"
-  },
   "dependencies": {
     "config": "1.25.1",
-    "email-notification": "git://github.com/nigelsdtech/email-notification.git#4a6d207a5f523daba312a3d427ae06c98fbff853",
+    "email-notification": "nigelsdtech/email-notification",
     "log4js": "1.1.1"
-  },
-  "devDependencies": {}
+  }
 }
